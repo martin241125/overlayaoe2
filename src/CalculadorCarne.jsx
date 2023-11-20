@@ -7,19 +7,31 @@ const CalculadoraCarne = () => {
   const [precioMatambre, setPrecioMatambre] = useState(0);
   const [precioAsado, setPrecioAsado] = useState(0);
   const [precioEntraña, setPrecioEntraña] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
   const [precioPechitoCerdo, setPrecioPechitoCerdo] = useState(0);
+  const [resultadoPersonas, setResultadoPersonas] = useState(0);
+  const [resultadoPrecio, setResultadoPrecio] = useState(0);
 
   const personasPorKilo = 2;
 
   const calcularPersonas = () => {
     const totalPersonas = Math.ceil(kilos * personasPorKilo);
+    setResultadoPersonas(totalPersonas);
     return totalPersonas;
   };
 
   const calcularPrecioAprox = () => {
     const precioTotal =
       kilos * (precioVacio + precioMatambre + precioAsado + precioEntraña + precioPechitoCerdo);
-    return precioTotal.toFixed(2);
+    const precioTotalFormateado = precioTotal.toFixed(2);
+    setResultadoPrecio(precioTotalFormateado);
+    return precioTotalFormateado;
+  };
+
+  const mostrarResultado = () => {
+    calcularPersonas();
+    calcularPrecioAprox();
+    setModalVisible(true);
   };
 
   return (
@@ -55,9 +67,15 @@ const CalculadoraCarne = () => {
         <input type="number" value={precioPechitoCerdo} onChange={(e) => setPrecioPechitoCerdo(e.target.value)} />
       </label>
       <br />
-      <button onClick={() => alert(`Personas: ${calcularPersonas()}, Precio Aprox: $${calcularPrecioAprox()}`)}>
-        Calcular
-      </button>
+      <button onClick={mostrarResultado}>Calcular</button>
+      {modalVisible && (
+        <div className="modal">
+          <h3>Resultados</h3>
+          <p>Personas: {resultadoPersonas}</p>
+          <p>Precio Aprox: ${resultadoPrecio}</p>
+          <button onClick={() => setModalVisible(false)}>Cerrar</button>
+        </div>
+      )}
     </div>
   );
 };
